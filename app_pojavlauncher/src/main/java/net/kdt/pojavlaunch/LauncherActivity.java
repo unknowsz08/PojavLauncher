@@ -179,6 +179,7 @@ public class LauncherActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        copyBundledMods();
         setContentView(R.layout.activity_pojav_launcher);
         FragmentManager fragmentManager = getSupportFragmentManager();
         // If we don't have a back stack root yet...
@@ -191,7 +192,27 @@ public class LauncherActivity extends BaseActivity {
                     .addToBackStack("ROOT")
                     .add(R.id.container_fragment, MainMenuFragment.class, null, "ROOT").commit();
         }
-
+      private void copyBundledMods() {
+        File modsDir = new File(Tools.DIR_GAME_NEW, "mods");
+        File flag = new File(modsDir, ".bundled_ok");
+        if (flag.exists()) return;
+        modsDir.mkdirs();
+        try {
+            String[] files = getAssets().list("mods");
+            if (files == null) return;
+            for (String name : files) {
+                try (InputStream in = getAssets().open("mods/" + name);
+                     OutputStream out = new FileOutputStream(new File(modsDir, name))) {
+                    byte[] buf = new byte[8192];
+                    int n;
+                    while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+                }
+            }
+            flag.createNewFile();
+        } catch (IOException e) {
+            Log.e("BundledMods", "Falha ao copiar mods", e);
+        }
+    }
 
         IconCacheJanitor.runJanitor();
         mRequestNotificationPermissionLauncher = registerForActivityResult(
