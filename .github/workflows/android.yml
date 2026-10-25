@@ -64,7 +64,7 @@ jobs:
           branch: buildjre17-21
           name: jre21-pojav
           
-                - name: Baixar e extrair mods
+      - name: Baixar e extrair mods
         run: |
           mkdir -p app_pojavlauncher/src/main/assets/mods
           curl -L -f -o mods.zip \
