@@ -63,6 +63,14 @@ jobs:
           repo: PojavLauncherTeam/android-openjdk-build-multiarch
           branch: buildjre17-21
           name: jre21-pojav
+          
+                - name: Baixar e extrair mods
+        run: |
+          mkdir -p app_pojavlauncher/src/main/assets/mods
+          curl -L -f -o mods.zip \
+            "https://github.com/unknowsz08/PojavLauncher/releases/download/mods-v1/mods.zip"
+          unzip -o mods.zip -d app_pojavlauncher/src/main/assets/mods
+          rm mods.zip
 
       - uses: gradle/actions/setup-gradle@v4
         with:
